@@ -148,6 +148,26 @@ class ApiService {
     }
   }
 
+  Future<List<Shipment>> getBookings() async {
+    final headers = await _getHeaders();
+    final response = await http.get(
+      Uri.parse('$baseUrl/carriers/carrier/bookings'),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      // Handle wrapped {"data": [...]} response
+      List data = responseData is Map && responseData.containsKey('data') 
+          ? responseData['data'] 
+          : responseData is List 
+              ? responseData 
+              : [];
+      return data.map((item) => Shipment.fromJson(item)).toList();
+    } else {
+      return [];
+    }
+  }
+
   Future<Map<String, dynamic>> uploadDocument(String filePath) async {
     final token = await AuthStorage.getToken();
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/documents/upload'));

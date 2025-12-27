@@ -18,6 +18,12 @@ class Shipment {
   final String? packageType;
   final DateTime createdAt;
   final DateTime updatedAt;
+  // Quote fields
+  final double? quoteAmount;
+  final String? quoteExtra;
+  final List<String>? quoteForwarderId;
+  final String? quoteStatus;
+  final DateTime? quoteTime;
 
   Shipment({
     required this.id,
@@ -39,6 +45,11 @@ class Shipment {
     this.packageType,
     required this.createdAt,
     required this.updatedAt,
+    this.quoteAmount,
+    this.quoteExtra,
+    this.quoteForwarderId,
+    this.quoteStatus,
+    this.quoteTime,
   });
 
   factory Shipment.fromJson(Map<String, dynamic> json) {
@@ -74,6 +85,15 @@ class Shipment {
       updatedAt: json['updated_at'] != null 
           ? DateTime.parse(json['updated_at']) 
           : DateTime.now(),
+      quoteAmount: json['quote_amount']?.toDouble(),
+      quoteExtra: json['quote_extra'],
+      quoteForwarderId: json['quote_forwarder_id'] != null
+          ? List<String>.from(json['quote_forwarder_id'].map((x) => x.toString()))
+          : null,
+      quoteStatus: json['quote_status'],
+      quoteTime: json['quote_time'] != null 
+          ? DateTime.parse(json['quote_time']) 
+          : null,
     );
   }
 
