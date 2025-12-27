@@ -492,13 +492,17 @@ class _ForwarderDashboardState extends State<ForwarderDashboard> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => QuoteSubmissionView(shipment: shipment),
               ),
             );
+            if (result == true) {
+              // Refresh dashboard after successful quote submission
+              _loadDashboardData();
+            }
           },
           child: Padding(
             padding: const EdgeInsets.all(18),
@@ -741,13 +745,17 @@ class _ForwarderDashboardState extends State<ForwarderDashboard> {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => QuoteSubmissionView(shipment: shipment),
                         ),
                       );
+                      if (result == true) {
+                        // Refresh dashboard after successful quote submission
+                        _loadDashboardData();
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,

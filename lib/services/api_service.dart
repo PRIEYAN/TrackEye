@@ -18,12 +18,11 @@ class ApiService {
 
   Future<List<Shipment>> getShipments({String? status}) async {
     final headers = await _getHeaders();
-    // Always use status parameter, default to 'draft' if not provided
-    final statusParam = status ?? 'draft';
-    final response = await http.get(
-      Uri.parse('$baseUrl/shipments/list?status=$statusParam'),
-      headers: headers,
-    );
+    // If status is null, fetch all shipments; otherwise filter by status
+    final uri = status != null
+        ? Uri.parse('$baseUrl/shipments/list?status=$status')
+        : Uri.parse('$baseUrl/shipments/list');
+    final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       // Handle both wrapped {"data": [...]} and direct array responses
@@ -117,6 +116,35 @@ class ApiService {
       return data.map((item) => Shipment.fromJson(item)).toList();
     } else {
       return [];
+    }
+  }
+
+  Future<void> submitForwarderQuote(String shipmentNumber, Map<String, dynamic> quoteData) async {
+    // Include shipment_number in the request body
+    final requestBodyData = {
+      'shipment_number': shipmentNumber,
+      ...quoteData,
+    };
+    final requestBody = json.encode(requestBodyData);
+    final headers = await _getHeaders();
+    
+    final uri = Uri.parse('$baseUrl/forwarder/request-accept');
+    final httpRequest = http.Request('PUT', uri);
+    httpRequest.headers.addAll(headers);
+    httpRequest.headers['Accept'] = 'application/json';
+    httpRequest.body = requestBody;
+    
+    final streamedResponse = await httpRequest.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final errorBody = response.body.isNotEmpty 
+          ? json.decode(response.body) 
+          : <String, dynamic>{};
+      final errorMessage = errorBody['detail'] ?? 
+                          errorBody['message'] ?? 
+                          'Failed to submit quote';
+      throw Exception(errorMessage);
     }
   }
 
