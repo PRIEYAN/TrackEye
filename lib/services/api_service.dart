@@ -150,10 +150,16 @@ class ApiService {
 
   Future<List<Shipment>> getBookings() async {
     final headers = await _getHeaders();
-    final response = await http.get(
-      Uri.parse('$baseUrl/carriers/carrier/bookings'),
-      headers: headers,
-    );
+    
+    final uri = Uri.parse('$baseUrl/carriers/AllQuotes');
+    final httpRequest = http.Request('POST', uri);
+    httpRequest.headers.addAll(headers);
+    httpRequest.headers['Accept'] = 'application/json';
+    httpRequest.body = json.encode({}); // Empty JSON body
+    
+    final streamedResponse = await httpRequest.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       // Handle wrapped {"data": [...]} response

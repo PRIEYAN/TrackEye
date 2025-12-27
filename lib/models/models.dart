@@ -88,7 +88,9 @@ class Shipment {
       quoteAmount: json['quote_amount']?.toDouble(),
       quoteExtra: json['quote_extra'],
       quoteForwarderId: json['quote_forwarder_id'] != null
-          ? List<String>.from(json['quote_forwarder_id'].map((x) => x.toString()))
+          ? (json['quote_forwarder_id'] is List
+              ? List<String>.from(json['quote_forwarder_id'].map((x) => x.toString()))
+              : [json['quote_forwarder_id'].toString()])
           : null,
       quoteStatus: json['quote_status'],
       quoteTime: json['quote_time'] != null 
