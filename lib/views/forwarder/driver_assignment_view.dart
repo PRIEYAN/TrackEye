@@ -3,6 +3,7 @@ import '../../core/constants.dart';
 import '../../services/api_service.dart';
 import '../../models/models.dart';
 import '../../models/driver.dart';
+import '../../widgets/shipment_map_widget.dart';
 
 class DriverAssignmentView extends StatefulWidget {
   final Shipment shipment;
@@ -152,181 +153,135 @@ class _DriverAssignmentViewState extends State<DriverAssignmentView> {
 
   Widget _buildMapSection() {
     return Container(
-      height: 250,
-      width: double.infinity,
       margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Route Info Header
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppConstants.forwarderOrange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.route,
+                    color: AppConstants.forwarderOrange,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Shipment Route',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppConstants.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Leaflet Map Widget
+          ShipmentMapWidget(
+            pickupLocation: widget.shipment.originPort,
+            dropLocation: widget.shipment.destinationPort,
+            pickupLatitude: widget.shipment.originLatitude,
+            pickupLongitude: widget.shipment.originLongitude,
+            dropLatitude: widget.shipment.destinationLatitude,
+            dropLongitude: widget.shipment.destinationLongitude,
+          ),
+          const SizedBox(height: 12),
+          // Location Details
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                _buildLocationRow(Icons.radio_button_checked, 'Pickup', widget.shipment.originPort, Colors.green),
+                const SizedBox(height: 12),
+                Container(
+                  height: 1,
+                  color: Colors.grey[200],
+                ),
+                const SizedBox(height: 12),
+                _buildLocationRow(Icons.location_on, 'Drop', widget.shipment.destinationPort, Colors.red),
+              ],
+            ),
           ),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          children: [
-            // Static Map Background
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.blue[100]!,
-                    Colors.blue[50]!,
-                    Colors.green[50]!,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: CustomPaint(
-                painter: _MapPainter(
-                  pickupLocation: widget.shipment.originPort,
-                  dropLocation: widget.shipment.destinationPort,
-                ),
-                child: Container(),
-              ),
-            ),
-            
-            // Map Overlay Info
-            Positioned(
-              top: 16,
-              left: 16,
-              right: 16,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.95),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: AppConstants.forwarderOrange.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(
-                            Icons.location_on,
-                            color: AppConstants.forwarderOrange,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          'Route',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppConstants.textPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    _buildLocationRow(Icons.radio_button_checked, 'Pickup', widget.shipment.originPort, Colors.green),
-                    const SizedBox(height: 6),
-                    _buildLocationRow(Icons.location_on, 'Drop', widget.shipment.destinationPort, Colors.red),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
   Widget _buildLocationRow(IconData icon, String label, String location, Color color) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16, color: color),
-        const SizedBox(width: 8),
-        Text(
-          '$label: ',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey[600],
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(6),
           ),
+          child: Icon(icon, size: 18, color: color),
         ),
+        const SizedBox(width: 12),
         Expanded(
-          child: Text(
-            location,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: AppConstants.textPrimary,
-            ),
-            overflow: TextOverflow.ellipsis,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                location,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppConstants.textPrimary,
+                ),
+              ),
+            ],
           ),
         ),
       ],
     );
   }
-}
-
-class _MapPainter extends CustomPainter {
-  final String pickupLocation;
-  final String dropLocation;
-
-  _MapPainter({required this.pickupLocation, required this.dropLocation});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppConstants.forwarderOrange
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke;
-
-    // Draw route line from pickup to drop
-    final startPoint = Offset(size.width * 0.2, size.height * 0.3);
-    final endPoint = Offset(size.width * 0.8, size.height * 0.7);
-    
-    // Draw curved route
-    final path = Path();
-    path.moveTo(startPoint.dx, startPoint.dy);
-    path.quadraticBezierTo(
-      size.width * 0.5,
-      size.height * 0.5,
-      endPoint.dx,
-      endPoint.dy,
-    );
-    canvas.drawPath(path, paint);
-
-    // Draw pickup marker
-    final pickupPaint = Paint()
-      ..color = Colors.green
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(startPoint, 8, pickupPaint);
-    canvas.drawCircle(startPoint, 8, Paint()..color = Colors.white..style = PaintingStyle.fill);
-    canvas.drawCircle(startPoint, 6, pickupPaint);
-
-    // Draw drop marker
-    final dropPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(endPoint, 8, dropPaint);
-    canvas.drawCircle(endPoint, 8, Paint()..color = Colors.white..style = PaintingStyle.fill);
-    canvas.drawCircle(endPoint, 6, dropPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _DriverCard extends StatefulWidget {

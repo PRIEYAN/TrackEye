@@ -4,6 +4,10 @@ class Shipment {
   final String status;
   final String originPort;
   final String destinationPort;
+  final double? originLatitude;
+  final double? originLongitude;
+  final double? destinationLatitude;
+  final double? destinationLongitude;
   final DateTime? preferredEtd;
   final DateTime? preferredEta;
   final DateTime? actualEtd;
@@ -33,6 +37,10 @@ class Shipment {
     required this.status,
     required this.originPort,
     required this.destinationPort,
+    this.originLatitude,
+    this.originLongitude,
+    this.destinationLatitude,
+    this.destinationLongitude,
     this.preferredEtd,
     this.preferredEta,
     this.actualEtd,
@@ -62,6 +70,10 @@ class Shipment {
       status: json['status'] ?? 'draft',
       originPort: json['origin_port'] ?? '',
       destinationPort: json['destination_port'] ?? '',
+      originLatitude: json['origin_latitude']?.toDouble(),
+      originLongitude: json['origin_longitude']?.toDouble(),
+      destinationLatitude: json['destination_latitude']?.toDouble(),
+      destinationLongitude: json['destination_longitude']?.toDouble(),
       preferredEtd: json['preferred_etd'] != null 
           ? DateTime.parse(json['preferred_etd']) 
           : null,

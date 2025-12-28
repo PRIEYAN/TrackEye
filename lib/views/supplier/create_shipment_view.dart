@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import '../../providers/shipment_provider.dart';
 import '../../services/api_service.dart';
 import '../../core/constants.dart';
+import '../../widgets/shipment_map_widget.dart';
 import 'invoice_upload_dialog.dart';
+import 'location_picker_screen.dart';
 
 class CreateShipmentView extends StatefulWidget {
   const CreateShipmentView({super.key});
@@ -16,9 +18,15 @@ class CreateShipmentView extends StatefulWidget {
 class _CreateShipmentViewState extends State<CreateShipmentView> {
   final _formKey = GlobalKey<FormState>();
   final _apiService = ApiService();
+  final _originController = TextEditingController();
+  final _destinationController = TextEditingController();
 
   String _originPort = '';
   String _destinationPort = '';
+  double? _originLatitude;
+  double? _originLongitude;
+  double? _destinationLatitude;
+  double? _destinationLongitude;
   final String _cargoType = 'FCL';
   double _weight = 0.0;
   double _volume = 0.0;
@@ -27,6 +35,13 @@ class _CreateShipmentViewState extends State<CreateShipmentView> {
   
   bool _isUploading = false;
   Map<String, dynamic>? _extractedData;
+
+  @override
+  void dispose() {
+    _originController.dispose();
+    _destinationController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickAndUploadDocument() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -66,6 +81,10 @@ class _CreateShipmentViewState extends State<CreateShipmentView> {
       final shipmentData = {
         'origin_port': _originPort,
         'destination_port': _destinationPort,
+        'origin_latitude': _originLatitude,
+        'origin_longitude': _originLongitude,
+        'destination_latitude': _destinationLatitude,
+        'destination_longitude': _destinationLongitude,
         'weight': _weight,
         'volume': _volume,
       };
@@ -145,16 +164,87 @@ class _CreateShipmentViewState extends State<CreateShipmentView> {
               const Text('Shipment Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Origin Port', border: OutlineInputBorder()),
-                validator: (v) => v!.isEmpty ? 'Required' : null,
+                controller: _originController,
+                decoration: InputDecoration(
+                  labelText: 'Pickup Location',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.location_on, color: Colors.green),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.map, color: AppConstants.primaryColor),
+                    onPressed: () async {
+                      final result = await Navigator.push<Map<String, dynamic>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LocationPickerScreen(
+                            label: 'Select Pickup Location',
+                            initialAddress: _originPort,
+                          ),
+                        ),
+                      );
+                      if (result != null && mounted) {
+                        setState(() {
+                          _originPort = result['address'];
+                          _originLatitude = result['latitude'];
+                          _originLongitude = result['longitude'];
+                          _originController.text = _originPort;
+                        });
+                      }
+                    },
+                    tooltip: 'Select location on map',
+                  ),
+                ),
+                validator: (v) => v!.isEmpty ? 'Pickup location is required' : null,
                 onSaved: (v) => _originPort = v!,
+                readOnly: true,
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Destination Port', border: OutlineInputBorder()),
-                validator: (v) => v!.isEmpty ? 'Required' : null,
+                controller: _destinationController,
+                decoration: InputDecoration(
+                  labelText: 'Drop Location',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.location_on, color: Colors.red),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.map, color: AppConstants.primaryColor),
+                    onPressed: () async {
+                      final result = await Navigator.push<Map<String, dynamic>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LocationPickerScreen(
+                            label: 'Select Drop Location',
+                            initialAddress: _destinationPort,
+                          ),
+                        ),
+                      );
+                      if (result != null && mounted) {
+                        setState(() {
+                          _destinationPort = result['address'];
+                          _destinationLatitude = result['latitude'];
+                          _destinationLongitude = result['longitude'];
+                          _destinationController.text = _destinationPort;
+                        });
+                      }
+                    },
+                    tooltip: 'Select location on map',
+                  ),
+                ),
+                validator: (v) => v!.isEmpty ? 'Drop location is required' : null,
                 onSaved: (v) => _destinationPort = v!,
+                readOnly: true,
               ),
+              if (_originPort.isNotEmpty && _destinationPort.isNotEmpty &&
+                  _originLatitude != null && _originLongitude != null &&
+                  _destinationLatitude != null && _destinationLongitude != null) ...[
+                const SizedBox(height: 16),
+                ShipmentMapWidget(
+                  pickupLocation: _originPort,
+                  dropLocation: _destinationPort,
+                  pickupLatitude: _originLatitude,
+                  pickupLongitude: _originLongitude,
+                  dropLatitude: _destinationLatitude,
+                  dropLongitude: _destinationLongitude,
+                ),
+              ],
               const SizedBox(height: 16),
               Row(
                 children: [
