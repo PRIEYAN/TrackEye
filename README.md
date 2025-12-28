@@ -4,7 +4,7 @@
 
 ### Smart Logistics Platform Powered by AI
 
-<img src="asests/logo.png" alt="TrackEye AI Logo" width="200" height="200">
+<img src="asests/logo.jpg" alt="TrackEye AI Logo" width="200" height="200">
 
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.10.1-02569B?logo=flutter&logoColor=white)](https://flutter.dev/)
@@ -44,7 +44,8 @@
 
 ### Core Capabilities
 
-- **🤖 AI-Powered Route Optimization**: Leverages machine learning algorithms to find the shortest and most eco-friendly routes, reducing carbon footprint and operational costs
+- **🤖 Multi-Agent AI System**: Powered by 5 specialized AI agents integrated through a main orchestrator agent that routes the most optimal and greenest route, generating comprehensive insights including CO₂ emissions, fuel consumption, time, distance, and explainable AI reasoning for route selection
+- **🌱 Explainable AI Route Optimization**: Leverages advanced machine learning algorithms with explainable AI to find the shortest and most eco-friendly routes, providing transparent reasoning for route choices while reducing carbon footprint and operational costs
 - **📄 Intelligent Document Processing**: Uses Google Gemini AI to extract and process shipping documents automatically
 - **📍 Real-Time Tracking**: Live shipment tracking with GPS integration for drivers and stakeholders
 - **💼 Multi-Role Platform**: Dedicated interfaces for suppliers, forwarders, buyers, and drivers
@@ -98,7 +99,33 @@ Our mission is to transform the logistics industry by making it smarter, faster,
 - Document management
 
 ### 🤖 AI Features
-- **Route Optimization**: Finds shortest and eco-friendly paths
+
+#### Multi-Agent AI System
+TrackEye AI employs a sophisticated **multi-agent architecture** consisting of:
+
+- **5 Specialized AI Agents**: Each agent handles specific aspects of logistics optimization:
+  - **Route Analysis Agent**: Analyzes multiple route options and constraints
+  - **Environmental Impact Agent**: Calculates carbon footprint and fuel consumption
+  - **Traffic & Weather Agent**: Processes real-time traffic and weather data
+  - **Cost Optimization Agent**: Evaluates economic factors and operational costs
+  - **Time Efficiency Agent**: Optimizes for delivery time and schedule adherence
+
+- **Main Orchestrator Agent**: Integrates all specialized agents to:
+  - Synthesize inputs from all 5 agents
+  - Determine the most optimal and greenest route
+  - Generate comprehensive insights and metrics
+  - Provide explainable AI reasoning for route selection
+
+#### Route Optimization & Insights
+- **🌱 Green Route Optimization**: Finds the most eco-friendly paths that minimize environmental impact
+- **📊 Comprehensive Metrics**: Generates detailed insights including:
+  - **CO₂ Emissions**: Total carbon dioxide emitted for the route
+  - **Fuel Consumption**: Estimated fuel usage based on route characteristics
+  - **Time Estimation**: Expected travel and delivery time
+  - **Distance**: Total route distance with breakdowns
+  - **Explainable AI**: Clear explanations of why a particular route was chosen, including trade-offs and optimization factors
+
+#### Additional AI Capabilities
 - **Document Extraction**: Automatic data extraction from invoices, bills of lading, etc.
 - **Rate Prediction**: AI-powered freight rate forecasting
 - **Delay Prediction**: Customs clearance delay prediction
@@ -126,7 +153,9 @@ graph TB
     
     subgraph "AI Services"
         F[Google Gemini AI<br/>Document Processing]
-        G[Route Optimization<br/>ML Engine]
+        G[Main Orchestrator Agent<br/>Multi-Agent Integration]
+        M[5 Specialized AI Agents<br/>Route • Environment • Traffic<br/>Cost • Time Efficiency]
+        N[Explainable AI<br/>Route Reasoning & Insights]
     end
     
     subgraph "External Integrations"
@@ -142,7 +171,11 @@ graph TB
     C -->|Cache & Sessions| K
     C -->|Job Queue| L
     C -->|AI Requests| F
-    C -->|Route Calculation| G
+    C -->|Route Optimization| G
+    G -->|Coordinates| M
+    M -->|Insights| G
+    G -->|Explanations| N
+    N -->|Metrics| C
     C -->|Integration| H
     C -->|Integration| I
     B -->|Location Data| J
@@ -154,6 +187,8 @@ graph TB
     style E fill:#3ECF8E,color:#fff
     style F fill:#4285F4,color:#fff
     style G fill:#FF6B35,color:#fff
+    style M fill:#10B981,color:#fff
+    style N fill:#8B5CF6,color:#fff
     style K fill:#DC382D,color:#fff
     style L fill:#F59E0B,color:#fff
 ```
@@ -258,7 +293,11 @@ graph TB
 ### AI Services
 
 - **Google Gemini AI**: Document extraction and processing
-- **Route Optimization Engine**: ML-based shortest path and eco-friendly route calculation
+- **Multi-Agent AI System**: 
+  - **Main Orchestrator Agent**: Integrates 5 specialized AI agents to determine optimal routes
+  - **5 Specialized AI Agents**: Route Analysis, Environmental Impact, Traffic & Weather, Cost Optimization, and Time Efficiency agents
+- **Explainable AI Engine**: Provides transparent reasoning for route selection with comprehensive insights
+- **Route Optimization Engine**: ML-based shortest path and eco-friendly route calculation generating metrics for CO₂ emissions, fuel consumption, time, and distance
 
 ---
 ---
@@ -395,7 +434,17 @@ Requestly helped us quickly test flows such as:
 </td>
 <td align="center" width="150">
 <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tensorflow/tensorflow-original.svg" width="48" height="48" alt="ML" />
-<br /><strong>ML Engine</strong><br />Route Optimization
+<br /><strong>Multi-Agent AI</strong><br />Route Optimization
+</td>
+</tr>
+<tr>
+<td align="center" width="150">
+<img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="48" height="48" alt="Explainable AI" />
+<br /><strong>Explainable AI</strong><br />Route Reasoning
+</td>
+<td align="center" width="150">
+<img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="48" height="48" alt="Insights" />
+<br /><strong>AI Insights</strong><br />CO₂ • Fuel • Time
 </td>
 </tr>
 </table>
