@@ -3,7 +3,6 @@ import '../../core/constants.dart';
 import '../../services/api_service.dart';
 import '../../models/models.dart';
 import 'driver_assignment_view.dart';
-import 'invoice_viewer_dialog.dart';
 
 class AcceptedRequestsView extends StatefulWidget {
   const AcceptedRequestsView({super.key});
@@ -209,37 +208,21 @@ class _AcceptedQuoteCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.receipt_long, color: AppConstants.forwarderOrange),
-                      tooltip: 'View Invoice',
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => InvoiceViewerDialog(
-                            shipmentId: quote.id,
-                          ),
-                        );
-                      },
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppConstants.successColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppConstants.successColor),
+                  ),
+                  child: const Text(
+                    'ACCEPTED',
+                    style: TextStyle(
+                      color: AppConstants.successColor,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppConstants.successColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppConstants.successColor),
-                      ),
-                      child: const Text(
-                        'ACCEPTED',
-                        style: TextStyle(
-                          color: AppConstants.successColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
