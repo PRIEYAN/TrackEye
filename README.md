@@ -462,6 +462,9 @@ Flask REST API backend with MongoDB and AI integration.
 ### AI Services Repository
 **GitHub**: [https://github.com/monish250507/map](https://github.com/monish250507/map)
 
+### Blockchain to verify payment logs
+**Github** : [https://github.com/poornima2006188/paymentbl](https://github.com/poornima2006188/paymentbl)
+
 ML models and AI services for route optimization and document processing.
 
 ---
